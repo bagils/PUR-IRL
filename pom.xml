@@ -7,6 +7,13 @@
   <version>0.0.7-V3-GTC-SNAPSHOT</version>
   <name>IRLJKV2.1Name</name>
   <description>This is the IRL JK V3 project as a Maven Project with alpha and discount parameters for PYP</description>
+  <repositories>
+    <repository>
+      <id>ejt-repo</id>
+      <name>EJ-Technology repo</name>
+      <url>https://maven.ej-technologies.com/repository/</url>
+    </repository>
+  </repositories>  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>

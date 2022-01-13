@@ -1,3 +1,27 @@
+# JRC Changes to original repo
+
+## Install
+
+Install dependencies
+
+Install CUDA and the examples
+
+$ sudo apt-get install maven openjdk-8-jdk default-jdk intel-mkl jblas
+
+Compile java source
+$ mvn package
+
+Compile CUDA code
+$ mkdir build && cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release ../c_src/ && make 
+$ cp libcudaconverge.so ../
+
+
+Run (from main source directory, not previous build dir)
+
+$ mkdir results
+$ mvn exec:java -Dexec.mainClass="CRC_Prediction.MainProgram" -Dexec.args="-outputDir results/"
+
 # PUR-IRL
 Pop-Up Restaurant for Inverse Reinforcement Learning (PUR-IRL)
 
