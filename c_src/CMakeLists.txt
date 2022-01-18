@@ -17,6 +17,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 option(BUILD_CUDA "Build cuda accelerated kernel library" ON)
 option(BUILD_MKL "Build mkl accelerated kernel library" ON)
 
+# If we are in a conda environment, then set the proper rpath
+if(DEFINED ENV{CONDA_PREFIX})
+  set(CMAKE_BUILD_RPATH "$ENV{CONDA_PREFIX}/lib")
+endif()
+
 # Java detection 
 find_package(Java REQUIRED)
 include(UseJava)
@@ -51,22 +56,22 @@ if (BUILD_CUDA)
       find_library(CUDA_DRIVER_LIBRARY
                    NAMES cuda_driver cuda
                    HINTS ${CUDA_TOOLKIT_ROOT_DIR}
-                         ENV CUDA_PATH
+                   ENV CUDA_PATH
                    PATH_SUFFIXES lib64/stubs lib/x64/stubs lib/stubs stubs)
   endif ()
+  
+  mark_as_advanced(CUDA_DRIVER_LIBRARY)
   
 #  find_library(CUBLAS_LIBRARY 
 #               NAMES cublas ${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}
 #               )
-   find_library(CUBLAS_LIBRARY 
+   find_library(CUDA_CUBLAS_LIBRARIES 
                NAMES cublas 
                HINTS ${CUDA_TOOLKIT_ROOT_DIR}
-                     ENV CUDA_PATH
+                     ${CMAKE_CUDA_IMPLICIT_LINK_DIRECTORIES}
+               ENV CUDA_PATH
                PATH_SUFFIXES nvidia/current lib64 lib/x64 lib)               
                
-  mark_as_advanced(CUDA_DRIVER_LIBRARY)
-
-
   message("Checking for cuda samples include file...")
 
   # Check if cuda samples are in the same directory of the project
@@ -84,7 +89,7 @@ if (BUILD_CUDA)
   )
 
   if ( ${CUDA_HELPER_INC} MATCHES "NOTFOUND$")
-    message(FATAL_ERROR "Could not find cuda samples includes (i.e. helper_cuda.h) in ${CUDA_SAMPLES_BASE_PATH}, please set it with -DCUDA_SAMPLES_PATH='path/to/Common'")
+    message(FATAL_ERROR "Could not find cuda samples includes (i.e. helper_cuda.h) in ${CUDA_SAMPLES_BASE_PATH}, please set it with -CUDA_SAMPLES_BASE_PATH='path/to/Common'")
   endif()
 
   include_directories(${CUDA_SAMPLES_BASE_PATH})
@@ -94,8 +99,9 @@ if (BUILD_CUDA)
     CRC_Prediction_InferenceAlgoCancer.cu
   )
   target_include_directories(cudaconverge PRIVATE ${CUDA_INCLUDE_DIRS})  
-  target_link_libraries(cudaconverge PRIVATE 
-            ${CUDA_LIBRARIES} ${CUDA_DRIVER_LIBRARY} ${CUDA_CUBLAS_LIBRARIES}
+  
+  target_link_libraries(cudaconverge  
+            ${CUDA_LIBRARIES} ${CUDA_CUBLAS_LIBRARIES}
             )  
   
   enable_testing()
