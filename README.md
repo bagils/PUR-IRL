@@ -41,7 +41,7 @@ Run code with MKL support (from main source directory, not previous build dir)
     
 For GPU support run instead:
 
-  $ mvn exec:java -Dexec.mainClass="CRC_Prediction.MainProgram" -Dexec.args="-outputDir results/ -numGPUs 1"
+    $ mvn exec:java -Dexec.mainClass="CRC_Prediction.MainProgram" -Dexec.args="-outputDir results/ -numGPUs 1"
 
 # PUR-IRL
 Pop-Up Restaurant for Inverse Reinforcement Learning (PUR-IRL)
