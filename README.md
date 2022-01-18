@@ -18,20 +18,31 @@ Compile java code first using maven:
 
     $ mvn package
 
-Then compile CUDA code in c_src directory with:
+To compile the accelerated code in c_src directory do:
 
     $ mkdir build && cd build
     $ cmake -DCMAKE_BUILD_TYPE=Release ../c_src/ && make 
-    $ cp libcudaconverge.so ../
+    $ cp *.so ../
 
-If the location of cuda samples is not in the default directory, you can set it with:
+This will build and copy both the cudaconverge.so and mklconverge.so libraries.
+
+If you only want to activate one of the two accelerators, you can do it by passing
+either -DBUILD_CUDA=OFF or -DBUILD_MKL=OFF as a cmake configuration option
+
+If the location of cuda samples is not in the default directory, 
+you can set it with DCUDA_SAMPLES_BASE_PATH as in the following example:
 
     $ cmake -DCMAKE_BUILD_TYPE=Release ../c_src/ -DCUDA_SAMPLES_BASE_PATH=~/projects/jrc/genomic/cuda-samples/Common/
 
-Run (from main source directory, not previous build dir)
+Run code with MKL support (from main source directory, not previous build dir)
 
     $ mkdir results
     $ mvn exec:java -Dexec.mainClass="CRC_Prediction.MainProgram" -Dexec.args="-outputDir results/"
+    
+For GPU support run instead:
+
+  $ mvn exec:java -Dexec.mainClass="CRC_Prediction.MainProgram" -Dexec.args="-outputDir results/ -numGPUs 1"
+
 # PUR-IRL
 Pop-Up Restaurant for Inverse Reinforcement Learning (PUR-IRL)
 
