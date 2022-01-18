@@ -81,8 +81,9 @@ public class MainProgram {
 		{
 			try
 			{
-				System.out.print ("Loading /home/mayo/m082166/irl/libcudaconverge.so");
-				System.load ("/home/mayo/m082166/irl/libcudaconverge.so");
+  			String userPath = System.getProperty("user.dir");
+				System.out.print ("Loading libcudaconverge.so from "+ userPath);
+				System.load (userPath + "/libcudaconverge.so");
 				System.out.println (": Success");
 			}
 			catch (Exception | UnsatisfiedLinkError oops)
@@ -91,6 +92,22 @@ public class MainProgram {
 				oops.printStackTrace ();
 			}
 		}
+		
+		if (!libNames.contains ("libmklconverge.so"))
+		{
+			try
+			{
+  			String userPath = System.getProperty("user.dir");
+				System.out.print ("Loading libmklconverge.so from "+ userPath);
+				System.load (userPath + "/libmklconverge.so");
+				System.out.println (": Success");
+			}
+			catch (Exception | UnsatisfiedLinkError oops)
+			{
+				System.out.println (": Failed");
+				oops.printStackTrace ();
+			}
+		}		
 		
 //		System.loadLibrary ("libjniconverge");
     }

@@ -1,3 +1,48 @@
+# JRC Changes to original repo
+This will list the changes added to the project by people at JRC
+
+## Install and run
+
+The code has several dependencies and uses C, CUDA and JAVA languages. Unfortunately, there was no project configuration, so we used Maven to build the java code and addeed a CMake build system on top of the C/CUDA code.
+
+First let's install CUDA and the examples
+
+    $ sudo apt-get install maven openjdk-8-jdk default-jdk intel-mkl jblas
+    $ git clone https://github.com/NVIDIA/cuda-samples.git
+
+Be sure to clone the examples in the same directory of the source code, because we define their location in the CMakeFiles.txt as:
+
+> include_directories(${CMAKE_SOURCE_DIR}"/cuda-samples/Common/")
+
+Compile java code first using maven:
+
+    $ mvn package
+
+To compile the accelerated code in c_src directory do:
+
+    $ mkdir build && cd build
+    $ cmake -DCMAKE_BUILD_TYPE=Release ../c_src/ && make 
+    $ cp *.so ../
+
+This will build and copy both the cudaconverge.so and mklconverge.so libraries.
+
+If you only want to activate one of the two accelerators, you can do it by passing
+either -DBUILD_CUDA=OFF or -DBUILD_MKL=OFF as a cmake configuration option
+
+If the location of cuda samples is not in the default directory, 
+you can set it with DCUDA_SAMPLES_BASE_PATH as in the following example:
+
+    $ cmake -DCMAKE_BUILD_TYPE=Release ../c_src/ -DCUDA_SAMPLES_BASE_PATH=~/projects/jrc/genomic/cuda-samples/Common/
+
+Run code with MKL support (from main source directory, not previous build dir)
+
+    $ mkdir results
+    $ mvn exec:java -Dexec.mainClass="CRC_Prediction.MainProgram" -Dexec.args="-outputDir results/"
+    
+For GPU support run instead:
+
+    $ mvn exec:java -Dexec.mainClass="CRC_Prediction.MainProgram" -Dexec.args="-outputDir results/ -numGPUs 1"
+
 # PUR-IRL
 Pop-Up Restaurant for Inverse Reinforcement Learning (PUR-IRL)
 

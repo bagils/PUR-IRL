@@ -1016,20 +1016,34 @@ void testMulBLAS (int numRows, int numCols, int maxIter, int whichGPU, int which
 
 int main (int argc, char **argv)
 {
+
+  
 	int	numRows = 1758;
 	int	numCols = 296;
 	int	maxIter = 1000;
-	int	numGPUs = 4;
+	int	numGPUs = 2;
 	int	numRuns = 1;
 	
 	initCuda (numGPUs);
-	for (int run = 0; run < numRuns; ++run)
+	for (int run = 0; run < numRuns; run++)
 	{
+	  
 		for (int whichGPU = 0; whichGPU < numGPUs; ++whichGPU)
 		{
+      printf (">************************************************\n");
+    	printf ("Starting run %d, GPU %d testMulD\n", run, whichGPU);
 			testMulD (numRows, numCols, maxIter, whichGPU, run);
-//			testMul (numRows, numCols, maxIter, whichGPU, run);
-//			testMulBLAS (numRows, numCols, maxIter, whichGPU, run);
+      printf ("<************************************************\n");			
+      
+      printf (">************************************************\n");
+    	printf ("Starting run %d, GPU %d testMul\n", run, whichGPU);      
+			testMul (numRows, numCols, maxIter, whichGPU, run);
+      printf ("<************************************************\n");						
+      
+      printf (">************************************************\n");
+    	printf ("Starting run %d, GPU %d testMulBlas\n", run, whichGPU);  
+			testMulBLAS (numRows, numCols, maxIter, whichGPU, run);
+      printf ("<************************************************\n");			
 		}
 	}
 }
