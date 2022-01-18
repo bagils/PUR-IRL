@@ -14,16 +14,19 @@ Be sure to clone the examples in the same directory of the source code, because 
 
 > include_directories(${CMAKE_SOURCE_DIR}"/cuda-samples/Common/")
 
-Compile java source
+Compile java code first using maven:
 
     $ mvn package
 
-Compile CUDA code
+Then compile CUDA code in c_src directory with:
 
     $ mkdir build && cd build
     $ cmake -DCMAKE_BUILD_TYPE=Release ../c_src/ && make 
     $ cp libcudaconverge.so ../
 
+If the location of cuda samples is not in the default directory, you can set it with:
+
+    $ cmake -DCMAKE_BUILD_TYPE=Release ../c_src/ -DCUDA_SAMPLES_BASE_PATH=~/projects/jrc/genomic/cuda-samples/Common/
 
 Run (from main source directory, not previous build dir)
 

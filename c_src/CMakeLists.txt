@@ -2,26 +2,39 @@ cmake_minimum_required (VERSION 3.10)
 
 project (cudaconverge LANGUAGES CUDA C CXX)
 
-SET(CMAKE_VERBOSE_MAKEFILE ON)
-
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 find_package(Java REQUIRED)
 include(UseJava)
 
 find_package(JNI REQUIRED)
+include_directories(${JNI_INCLUDE_DIRS})
 
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR})
 find_package(MKL REQUIRED)
 include_directories(${MKL_INCLUDE_DIRS})
 
-include_directories(${JNI_INCLUDE_DIRS})
-message (STATUS "JNI_LIBRARIES=${JNI_LIBRARIES}")
+message("Checking for cuda samples include file...")
+
+# Check if cuda samples are in the same directory of the project
+#  or in its parent
+set(CUDA_SAMPLES_COMM "cuda-samples/Common/")
+set(CUDA_SAMPLES_BASE_PATH "${CMAKE_SOURCE_DIR}/../${CUDA_SAMPLES_COMM}"
+  CACHE STRING "Path to cuda sample include files")  
+message("CUDA samples base path is set to:" ${CUDA_SAMPLES_BASE_PATH})
 
 
-enable_testing()
+find_file (CUDA_HELPER_INC
+  NAMES helper_cuda.h 
+  PATHS ${CUDA_SAMPLES_BASE_PATH}
+  DOC "Path to cuda sample include files"
+)
 
-include_directories(${CMAKE_SOURCE_DIR}"/cuda-samples/Common/")
+if ( ${CUDA_HELPER_INC} MATCHES "NOTFOUND$")
+  message(FATAL_ERROR "Could not find cuda samples includes (i.e. helper_cuda.h) in ${CUDA_SAMPLES_BASE_PATH}, please set it with -DCUDA_SAMPLES_PATH='path/to/Common'")
+endif()
 
+include_directories(${CUDA_SAMPLES_BASE_PATH})
 
 add_library(cudaconverge SHARED 
   CRC_Prediction_InferenceAlgoCancer.cu
@@ -29,6 +42,8 @@ add_library(cudaconverge SHARED
   )
   
 target_link_libraries(cudaconverge ${MKL_LIBRARIES})  
+
+enable_testing()
 
 #set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.6" "-target" "1.6")
 
