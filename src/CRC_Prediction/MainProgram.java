@@ -93,6 +93,22 @@ public class MainProgram {
 			}
 		}
 		
+		if (!libNames.contains ("libmklconverge.so"))
+		{
+			try
+			{
+  			String userPath = System.getProperty("user.dir");
+				System.out.print ("Loading libmklconverge.so from "+ userPath);
+				System.load (userPath + "/libmklconverge.so");
+				System.out.println (": Success");
+			}
+			catch (Exception | UnsatisfiedLinkError oops)
+			{
+				System.out.println (": Failed");
+				oops.printStackTrace ();
+			}
+		}		
+		
 //		System.loadLibrary ("libjniconverge");
     }
 	
