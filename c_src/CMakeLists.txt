@@ -20,7 +20,7 @@ message (STATUS "JNI_LIBRARIES=${JNI_LIBRARIES}")
 
 enable_testing()
 
-include_directories("/home/mario/projects/jrc/genomic/cuda-samples/Common/")
+include_directories(${CMAKE_SOURCE_DIR}"/cuda-samples/Common/")
 
 
 add_library(cudaconverge SHARED 
