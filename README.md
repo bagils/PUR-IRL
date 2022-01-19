@@ -5,7 +5,7 @@ This will list the changes added to the project by people at JRC
 
 The code has several dependencies and uses C, CUDA and JAVA languages. Unfortunately, there was no project configuration, so we used Maven to build the java code and addeed a CMake build system on top of the C/CUDA code.
 
-First let's install CUDA and the examples
+(1) First let's install CUDA and the examples
 
     $ sudo apt-get install maven openjdk-8-jdk default-jdk intel-mkl jblas
     $ git clone https://github.com/NVIDIA/cuda-samples.git
@@ -14,12 +14,20 @@ Be sure to clone the examples in the same directory of the source code, because 
 
 > include_directories(${CMAKE_SOURCE_DIR}"/cuda-samples/Common/")
 
-Compile java code first using maven:
+(2) Compile java code first using maven:
 
     $ mvn package
 
-To compile the accelerated code in c_src directory do:
+(3) Compile accelerated native code in c_src directory
+First generate the list of all classpaths used in the maven build
 
+    $ mvn dependency:build-classpath -Dmdep.outputFile=cp.txt
+
+This will create a cp.txt files with all the external dependencies of our project
+
+Now generate the C interface that glues Java code and the native one and build it with cmake:
+
+    $ javah -d c_src/ -cp target/classes/:$(cat cp.txt) CRC_Prediction.InferenceAlgoCancer
     $ mkdir build && cd build
     $ cmake -DCMAKE_BUILD_TYPE=Release ../c_src/ && make 
     $ cp *.so ../
