@@ -1,0 +1,10 @@
+target/
+build/
+c_src/CRC_Prediction_InferenceAlgoCancer.h
+cp.txt
+*.so
+.classpath
+.project
+.settings/
+results/
+
